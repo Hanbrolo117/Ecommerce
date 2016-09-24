@@ -22,10 +22,11 @@ namespace Ecommerce
         /// </summary>
         /// <param name="clientID">The name of the client's account.</param>
         /// <param name="init_amount_to_deposit">The initial deposit the client would like to make to their new account with this banking system.</param>
-        public void addClient(String clientID, decimal init_amount_to_deposit) {
+        public int addClient(String clientID, decimal init_amount_to_deposit) {
             int new_card_number = generateCreditcardNumber();
             Client new_client = new Client(clientID, new_card_number, init_amount_to_deposit);
             this.clients.Add(new_card_number, new_client);
+            return new_card_number;
         }
 
 
@@ -44,7 +45,7 @@ namespace Ecommerce
 
             //Convert decrypted String data to integer representation of credit card number:
             Int32 cc_number = Convert.ToInt32(cc_decrypted_data);
-            decimal amount_to_charge_cc = this.formatCurrency(Convert.ToDecimal(amt_decrypted_data));
+            decimal amount_to_charge_cc = BankService.formatCurrency(Convert.ToDecimal(amt_decrypted_data));
 
             //Confirm Valid account with provided credit card number:
             if (this.clients.ContainsKey(cc_number)) {
@@ -76,7 +77,7 @@ namespace Ecommerce
         /// </summary>
         /// <param name="amount_to_format">The decimal of an amount to format</param>
         /// <returns>formatted decimal value of the decimal amount passed in.</returns>
-        private decimal formatCurrency(decimal amount_to_format) {
+        public static decimal formatCurrency(decimal amount_to_format) {
             return decimal.Round(amount_to_format, 2, MidpointRounding.AwayFromZero);
         }
 
@@ -156,7 +157,7 @@ namespace Ecommerce
             public Client(String cId, int cNumber, decimal amt) {
                 this.clientID = cId;
                 this.cardNo = cNumber;
-                this.amount = decimal.Round(amt, 2, MidpointRounding.AwayFromZero);
+                this.amount = BankService.formatCurrency(amt);
             }
 
 
@@ -183,7 +184,7 @@ namespace Ecommerce
             /// </summary>
             /// <returns>The decimal amount a Client has in the bank.</returns>
             public decimal getClientAmount() {
-                return decimal.Round(this.amount,2,MidpointRounding.AwayFromZero);//properly round decimal value for accuracy whilst handling currency.
+                return BankService.formatCurrency(this.amount);//properly round decimal value for accuracy whilst handling currency.
             }
 
             /// <summary>
