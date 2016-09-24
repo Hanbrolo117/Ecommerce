@@ -88,6 +88,22 @@ namespace Ecommerce
         }
 
 
+        public void orderProcessHandler(string hotel_id) {
+
+            if (this.id == hotel_id) {
+
+
+
+            }//END IF STATEMENT
+
+
+        }
+
+        public void submitOrder(OrderObject order_to_submit) {
+            //Encrpyt the orderObject:
+            string encrpyted_order = EnDecoder.Encode(order_to_submit);
+        }
+
         /// <summary>
         /// This function updates the price of the Hotel rooms, and if the new price is lower than the current price, emits an event to any and all subscribers.
         /// </summary>
