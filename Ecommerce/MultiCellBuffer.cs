@@ -22,6 +22,7 @@ namespace Ecommerce
             public Cell()
             {
                 this.encodedStr = "";
+                this.id = -1;
             }
 
             public string getString()
@@ -50,7 +51,7 @@ namespace Ecommerce
                     this.cellArray[i] = new Cell();
             }
 
-            //Cell getOneCell() { return Cell someCell; }
+            //Cell getOneCell()   { return Cell someCell; }
             //void setOneCell() { cellArray[someCell].encodedStr = someString;}
         }
 
