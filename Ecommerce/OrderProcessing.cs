@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ecommerce.decryptionService;
+using System.Threading;
 
 namespace Ecommerce
 {
@@ -18,6 +20,7 @@ namespace Ecommerce
         private static Ecommerce.MultiCellBuffer order_object_to_process = new Ecommerce.MultiCellBuffer();
         private static Ecommerce.MultiCellBuffer processed_order_objects = new Ecommerce.MultiCellBuffer();
 
+        private const decimal SALES_TAX = 0.08M;
 
         public static void submitProcessedOrderObject(string encoded_order ,string travel_agency_id)
         {
@@ -49,10 +52,34 @@ namespace Ecommerce
         }
 
         public static string orderProcessor(string encoded_order_object) {
+            
             //Decode string into an object:
-            OrderObject newOrderObject = EnDecoder.Decode(encoded_order_object);
+            OrderObject new_order_object = EnDecoder.Decode(encoded_order_object);
+            
+            //Update total amount to account for Sales tax:
+            decimal total = BankService.formatCurrency((new_order_object.getAmount() + (new_order_object.getAmount() * SALES_TAX)));
+            new_order_object.setAmount(total);
 
+            //Create an encryption service via ASU's Repo:
+            Service encryption = new Service();
 
+            //Encrypt the credit card number:
+            string encrypted_cc_number = encryption.Encrypt(Convert.ToString(new_order_object.getCardNo()));
+            
+            //encrypt the total amount to charge the account:
+            string encrypted_amount = encryption.Encrypt(Convert.ToString(new_order_object.getAmount()));
+
+            //Have Bank validate the Account charge given the encrypted credit card number and amount to charge:
+            new_order_object.setIsValid( BankService.confirmCreditCard(encrypted_cc_number, encrypted_amount));
+
+            //Get the Travel_agencies ID:
+            string travel_agency_id = new_order_object.getSenderID();
+
+            //Encode the Processed Order Object:
+            string encoded_processed_order = EnDecoder.Encode(new_order_object);
+
+            //Create a new thread to handle the processed order:
+            Thread process_order_thread = new Thread(() => OrderProcessing.submitProcessedOrderObject(encoded_processed_order, travel_agency_id) );
 
             return "";//TODO::Implement.
         }

@@ -18,6 +18,7 @@ namespace Ecommerce
         private int current_pricecuts_made;             // Instantiate the current number of price cuts made. 20 is the max.
         private PriceModel price_model;
 
+
         //Public constant variables for use by application and other classes (including Hotel of course):
         public const int MAX_PRICE = 500;               //Maximum price of a given room in the Hotel can have.
         public const int MAX_ROOMS = 350;               //Maximum number of rooms a Hotel can have.
@@ -90,10 +91,14 @@ namespace Ecommerce
 
         public void orderProcessHandler(string hotel_id) {
 
+            //If this Hotel matches with this event that emitted this:
             if (this.id == hotel_id) {
-                //Get string from MultiCellBuffer
-                string encoded_order_object = OrderProcessing.getOrderToProcess(this.id);
 
+                //Get encoded orderObject string from MultiCellBuffer:
+                string encoded_order__object_to_process = OrderProcessing.getOrderToProcess(this.id);
+
+                //Process Order via the OrderProcessing class:
+                OrderProcessing.orderProcessor(encoded_order__object_to_process);
 
             }//END IF STATEMENT
 

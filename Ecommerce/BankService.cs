@@ -10,22 +10,18 @@ namespace Ecommerce
 {
     class BankService
     {
-        private Hashtable clients;
+        private static Hashtable clients = new Hashtable();
 
-
-        public BankService() {
-            clients = new Hashtable();
-        }
 
         /// <summary>
         /// This function adds a new client to the banking system. This function should be called when a potential client applies for a card.
         /// </summary>
         /// <param name="clientID">The name of the client's account.</param>
         /// <param name="init_amount_to_deposit">The initial deposit the client would like to make to their new account with this banking system.</param>
-        public int addClient(String clientID, decimal init_amount_to_deposit) {
+        public static int addClient(String clientID, decimal init_amount_to_deposit) {
             int new_card_number = generateCreditcardNumber();
             Client new_client = new Client(clientID, new_card_number, init_amount_to_deposit);
-            this.clients.Add(new_card_number, new_client);
+            clients.Add(new_card_number, new_client);
             return new_card_number;
         }
 
@@ -38,26 +34,26 @@ namespace Ecommerce
         /// <param name="credit_card_number">The credit card number to charge.</param>
         /// <param name="amt_to_charge">the amount to charge to the account associated to the specified credit card number.</param>
         /// <returns>Returns a "valid" confirmation if the account was successfully charged, and "not valid" if the account was not succesfully charged.</returns>
-        public String confirmCreditCard(String credit_card_number, String amt_to_charge) {
+        public static Boolean confirmCreditCard(String credit_card_number, String amt_to_charge) {
             //Decrypt Received data:
-            String cc_decrypted_data = this.decryptReceivedData(credit_card_number);
-            String amt_decrypted_data = this.decryptReceivedData(amt_to_charge);
+            String cc_decrypted_data = decryptReceivedData(credit_card_number);
+            String amt_decrypted_data = decryptReceivedData(amt_to_charge);
 
             //Convert decrypted String data to integer representation of credit card number:
             Int32 cc_number = Convert.ToInt32(cc_decrypted_data);
             decimal amount_to_charge_cc = BankService.formatCurrency(Convert.ToDecimal(amt_decrypted_data));
 
             //Confirm Valid account with provided credit card number:
-            if (this.clients.ContainsKey(cc_number)) {
+            if (clients.ContainsKey(cc_number)) {
                 //If Client has sufficient funds, charge the client's account and return a valid confirmation:
-                if (this.withdrawFromClientAmount(amount_to_charge_cc, cc_number)) {
+                if (withdrawFromClientAmount(amount_to_charge_cc, cc_number)) {
                     //Return valid confirmation:
-                    return "valid";
+                    return true;
                 }                
             }
 
             //Else return not valid confirmation:
-            return "not valid";
+            return false;
         }
 
         /// <summary>
@@ -65,7 +61,7 @@ namespace Ecommerce
         /// </summary>
         /// <param name="data_to_decrypt">The encrypted string received by some other service in the E-Commerce ecosystem.</param>
         /// <returns>The decrypted string of the encrypted string that was passed in.</returns>
-        private String decryptReceivedData(String data_to_decrypt) {
+        private static String decryptReceivedData(String data_to_decrypt) {
             //decrpyt Data received using the decryption service in the ASU repository. Return decrypted String data
             Service ds = new Service();
             return ds.Decrypt(data_to_decrypt);
@@ -85,14 +81,14 @@ namespace Ecommerce
         /// This Function generates a unique credit Card Number for new Clients to be added to the banking system.
         /// </summary>
         /// <returns>A new credit card number for a new client in the banking system.</returns>
-        private int generateCreditcardNumber()
+        private static int generateCreditcardNumber()
         {
             Random rando = new Random();
             int new_card_number = -1;
             do {
                 new_card_number = rando.Next(100000000,1000000000);//Attempt to assign new credit card number
             }
-            while (this.clients.ContainsKey(new_card_number));//Keep looping until a unique card number for the new client is successfully generated
+            while (clients.ContainsKey(new_card_number));//Keep looping until a unique card number for the new client is successfully generated
 
             return new_card_number;//return newly generated credit card number.
         }
@@ -102,9 +98,9 @@ namespace Ecommerce
         /// </summary>
         /// <param name="amount_to_deposit">The amount to deposit to a Client's account in the Bank's System.</param>
         /// <param name="cc_number">The valid credit card number to specify which account in the banking system to deposit the amount to.</param>
-        public Boolean depositToClientAmount(decimal amount_to_deposit, int cc_number) {
+        public static Boolean depositToClientAmount(decimal amount_to_deposit, int cc_number) {
             //Get client associated with the given credit card number, to deposit to:
-            Client client_to_deposit = (Client)this.clients[cc_number];
+            Client client_to_deposit = (Client)clients[cc_number];
 
             //Deposit amount to client's account:
             client_to_deposit.setClientAmount((client_to_deposit.getClientAmount() + amount_to_deposit));
@@ -120,9 +116,9 @@ namespace Ecommerce
         /// <param name="amount_to_withdrawal">The amount to withdraw from a Client in the Bank System.</param>
         /// <param name="cc_number">A valid credit card number that resides in the Bank System.</param>
         /// <returns>True if the withdrawal process was a success. False if it failed.</returns>
-        public Boolean withdrawFromClientAmount(decimal amount_to_withdrawal, int cc_number) {
+        public static Boolean withdrawFromClientAmount(decimal amount_to_withdrawal, int cc_number) {
             //Get client associated with the credit card number:
-            Client client_to_withdrawal = (Client)this.clients[cc_number];
+            Client client_to_withdrawal = (Client)clients[cc_number];
 
             if (amount_to_withdrawal < client_to_withdrawal.getClientAmount())
             {

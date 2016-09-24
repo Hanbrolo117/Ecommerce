@@ -41,7 +41,7 @@ namespace Ecommerce
         /// <summary>
         /// This is the main function that handles hotel price cuts via PriceCut delegate created in Hotel.cs
         /// </summary>
-        public void hotelPriceBeenCut(decimal current_price, decimal new_price, int available_rooms, string id) //Using delegate in hotel.cs
+        public void hotelPriceBeenCut(decimal current_price, decimal new_price, int available_rooms, string hotel_id) //Using delegate in hotel.cs
         {
             int rooms_to_order;
             int demand = 0; //Demand is a variable that will be used as a multiplier for how many rooms to order
@@ -60,6 +60,12 @@ namespace Ecommerce
             }
 
             rooms_to_order = (available_rooms - (10 * demand)); //Take whatever rooms are available, subtract it by 10 * demand
+            //Calculate the subTotal:
+            decimal amount = BankService.formatCurrency(rooms_to_order*new_price);
+            //create a new order Object:
+            OrderObject new_order_object = new OrderObject(this.agency_id, hotel_id, this.credit_card, amount, new_price, false);
+            //Place Order:
+            placeOrder(new_order_object);
         }
 
         /// <summary>

@@ -24,6 +24,8 @@ namespace Ecommerce
             this.unitPrice = 0;
             this.valid_order = false;
         }
+
+        //Sender = travel Agency, receiver = hotel
         public OrderObject(string sd_id, string rcvr_id, int cc_number, decimal amt, decimal ut_price, Boolean is_v) {
             this.senderID = sd_id;
             this.receiverID = rcvr_id;
