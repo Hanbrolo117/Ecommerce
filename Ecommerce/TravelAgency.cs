@@ -22,7 +22,7 @@ namespace Ecommerce
         {
             this.agency_id = agency_id;
 
-            OrderProcessing.getProcessedOrderObject(agency_id);
+            OrderProcessing.addOrderToProcessListener(processedOrder);
         }
 
         /// <summary>
