@@ -89,6 +89,10 @@ namespace Ecommerce
         }
 
 
+        /// <summary>
+        /// This Function is subscribed to an OrderToBeProcessed Event and handles it using the orderProcessor function in the OrderProcessing class.
+        /// </summary>
+        /// <param name="hotel_id">The Id of the hotel that needs to process the respective order that triggered the orderToBeProcessed event</param>
         public void orderProcessHandler(string hotel_id) {
 
             //If this Hotel matches with this event that emitted this:
@@ -104,10 +108,6 @@ namespace Ecommerce
 
         }
 
-        public void submitOrder(OrderObject order_to_submit) {
-            //Encrpyt the orderObject:
-            string encrpyted_order = EnDecoder.Encode(order_to_submit);
-        }
 
         /// <summary>
         /// This function updates the price of the Hotel rooms, and if the new price is lower than the current price, emits an event to any and all subscribers.

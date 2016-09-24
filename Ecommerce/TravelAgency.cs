@@ -12,6 +12,8 @@ namespace Ecommerce
         //TravelAgency Defining Attributes:
         private string agency_id; //Variable N where N = 5 (TravelAgency1 --> TravelAgency5)
         private int credit_card;  //Variable to hold credit card number
+        //----------------------------------------------------------------------------------------------------------------------------------
+
 
         /// <summary>
         /// This is the args constructor of the TravelAgency class. 
@@ -20,7 +22,7 @@ namespace Ecommerce
         {
             this.agency_id = agency_id;
 
-            OrderProcessing.getProcessedOrderObject(agency_id);
+            OrderProcessing.addOrderToProcessListener(processedOrder);
         }
 
         /// <summary>
