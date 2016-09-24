@@ -8,14 +8,20 @@ namespace Ecommerce
 {
     class OrderObject
     {
-
+        //OrderObject Attributes:
+        //-------------------------------
         private String senderID;
         private String receiverID;
         private int cardNo;
         private decimal amount;
         private decimal unitPrice;
         private Boolean valid_order;
+        //-------------------------------
 
+
+        /// <summary>
+        /// 
+        /// </summary>
         public OrderObject() {
             this.senderID = null;
             this.receiverID = null;
