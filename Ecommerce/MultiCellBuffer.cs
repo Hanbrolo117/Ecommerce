@@ -107,11 +107,13 @@ namespace Ecommerce
                             cellArray[i].setEncodedString("");
                             pool.Release(1);
                             Monitor.Exit(cellArray[i]);
+                            i = 4;
                         }
                         else
                         {
                             Monitor.Exit(cellArray[i]);
                             pool.Release(1);
+                            i = 4;
                         }
                     }
                 }
