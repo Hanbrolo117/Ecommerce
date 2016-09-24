@@ -13,8 +13,8 @@ namespace Ecommerce
         **/
     public class Cell
     {
-        string ID;
-        string message;
+        private string ID;
+        private string message;
 
         public Cell()
         {
@@ -67,7 +67,7 @@ namespace Ecommerce
             * If a semaphore indicate free resorce, setOneCell will TryEnter each cell
             * until it sees a free cell and will lock that cell until it finish writting
             */        
-        void setOneCell(string message, string ID)
+        public void setOneCell(string message, string ID)
         {
             //wait for a resource to be free
             pool.WaitOne();
@@ -92,7 +92,7 @@ namespace Ecommerce
             * until it sees a free cell and will lock that cell until it finish reading
             * returns empty string if cell is free but doesn't have value in it
             */
-        string getOneCell(string ID)
+        public string getOneCell(string ID)
         {
             string result = "";
             //wait for a resource to be free
