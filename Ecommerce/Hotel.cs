@@ -40,19 +40,15 @@ namespace Ecommerce
         }
 
         public void hotelFunc(string hotel_id) {
-            this.id = hotel_id;                 // Set up Hotel ID
-            
-
+                             
+           //Continue this Price Model Updating until the maximum number of price cuts have been made.
             while (current_pricecuts_made <= MAX_PRICECUTS_ALLOWED) {
-                Thread.Sleep(500);//To add some sense of time passing in the application.
+                //To add some sense of time passing in the application.
+                Thread.Sleep(500);
 
                 //TODO::UPDATE PRICE MODEL
-
-                //TODO::CHECK t
+                this.updateRoomPrice(this.calculateNewRoomPrice());
             }
-
-
-
         }
 
 
@@ -60,7 +56,7 @@ namespace Ecommerce
         /// This Function takes a method/function that should be from the TravelAgency, and subscribes it to the price_cut_event in this Hotel.
         /// </summary>
         /// <param name="travel_agency_handler">A function to handle a price cut event when the price cut event is emmited.</param>
-        public void subscribeHandlerToPriceCutEvents(Action<decimal,decimal,string> travel_agency_handler) {
+        public void subscribeHandlerToPriceCutEvents(Action<decimal,decimal,int,string> travel_agency_handler) {
             //Using the += operator we can add, or rather, "subscribe" an action, or rather, a TravelAgency function/method that has the same method signature as the 
             //Hotels delegate, TO this hotel's delegate. Thus when the delegate "emits" a message it will call all functions that are subscribed to this delegate. This is 
             //essentially the core of what is event driven programming.
@@ -73,16 +69,21 @@ namespace Ecommerce
             this.price = new_room_price;            //Update the price of rooms in this Hotel.
             Boolean is_new_price_lower = (new_room_price < current_price) ? true : false;
 
+            //If the new price based on the price model is indeed lower than what the current price was AND there exists AT LEAST one subscriber to our delegate:
             if ((is_new_price_lower) && (this.price_cut_event != null)) {
 
+                //Increment the number of price cuts made.
+                this.current_pricecuts_made++;
 
+                //Emit an event to all subsriber(s) for handling with the provided data:
+                this.price_cut_event(current_price, new_room_price, this.current_number_of_available_rooms,this.id);
             }
-
         }
 
 
         private decimal calculateNewRoomPrice() {
             //TODO::Implement with the PriceModel inner class.
+            return 0;
         }
 
         private class PriceModel {
