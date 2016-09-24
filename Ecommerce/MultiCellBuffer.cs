@@ -13,21 +13,32 @@ namespace Ecommerce
         **/
     public class Cell
     {
-        string encodedStr;
+        string ID;
+        string message;
 
         public Cell()
         {
-            this.encodedStr = "";
+            this.message = "";
         }
 
-        public string getEncodedString()
+        public string getMessage()
         {
-            return this.encodedStr;
+            return this.message;
         }
 
-        public void setEncodedString(string message)
+        public void setMessage(string message)
         {
-            this.encodedStr = message;
+            this.message = message;
+        }
+
+        public string getID()
+        {
+            return this.ID;
+        }
+
+        public void setID(string ID)
+        {
+            this.ID = ID;
         }
     }
 
@@ -49,14 +60,14 @@ namespace Ecommerce
         public MultiCellBuffer()
         {
             for (int i = 0; i < 3; i++)
-                this.cellArray[i] = new Cell();
+                 cellArray[i] = new Cell();
         }
 
         /*
             * If a semaphore indicate free resorce, setOneCell will TryEnter each cell
             * until it sees a free cell and will lock that cell until it finish writting
             */        
-        void setOneCell(string encodedMessage)
+        void setOneCell(string message, string ID)
         {
             //wait for a resource to be free
             pool.WaitOne();
@@ -67,7 +78,8 @@ namespace Ecommerce
             {
                 if (Monitor.TryEnter(cellArray[i]))          //if a cell in locked, move on to the next one
                 {
-                    cellArray[i].setEncodedString(encodedMessage);
+                    cellArray[i].setID(ID);
+                    cellArray[i].setMessage(message);
                     Monitor.Exit(cellArray[i]);          //unlock the object after writing
                     pool.Release(1);
                     i = 4;
@@ -80,7 +92,7 @@ namespace Ecommerce
             * until it sees a free cell and will lock that cell until it finish reading
             * returns empty string if cell is free but doesn't have value in it
             */
-        string getOneCell()
+        string getOneCell(string ID)
         {
             string result = "";
             //wait for a resource to be free
@@ -92,11 +104,12 @@ namespace Ecommerce
             {
                 if (Monitor.TryEnter(cellArray[i]))
                 {
-                    //if the cell have an order in it
-                    if (cellArray[i].getEncodedString().Length != 0)
+                    //if the cell have the same ID
+                    if (cellArray[i].getID().CompareTo(ID) == 0) 
                     {
-                        result = cellArray[i].getEncodedString();
-                        cellArray[i].setEncodedString("");
+                        result = cellArray[i].getMessage();
+                        cellArray[i].setID("");
+                        cellArray[i].setMessage("");
                         pool.Release(1);
                         Monitor.Exit(cellArray[i]);
                         i = 4;
