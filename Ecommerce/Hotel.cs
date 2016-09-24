@@ -36,12 +36,11 @@ namespace Ecommerce
         /// </summary>
         /// <param name="new_id">The unique string representation of an id for identifying and instance of this class.</param>
         public Hotel(string new_id) {
-            this.id = new_id;                                   // Initialize the Hotel's ID.
-            this.current_number_of_available_rooms = MAX_ROOMS; // Initialize the Hotel's 
-            current_pricecuts_made = 0;                         // Instantiate the current number of price cuts made. 20 is the max.
-            this.current_pricecuts_made = 0;                    // Instantiate the current number of price cuts made. 20 is the max.
-            this.price_model = new PriceModel();                // Instantiate a new Price Model object for this Hotel.
-            this.price;                                         // TODO::Initialize first price value using the price model;
+            this.id = new_id;                                                                       // Initialize the Hotel's ID.
+            this.current_number_of_available_rooms = MAX_ROOMS;                                     // Initialize the Hotel's 
+            this.current_pricecuts_made = 0;                                                        // Instantiate the current number of price cuts made. 20 is the max.
+            this.price_model = new PriceModel(this.price, this.current_number_of_available_rooms);  // Instantiate a new Price Model object for this Hotel.
+            this.price = this.price_model.generateNewPrice();                                       // TODO::Initialize first price value using the price model;
 
             
         }
@@ -58,15 +57,20 @@ namespace Ecommerce
                 Thread.Sleep(500);
 
                 //TODO::UPDATE PRICE MODEL
-                this.updateRoomPrice(this.calculateNewRoomPrice());
+                this.updateRoomPrice(this.price_model.generateNewPrice());
 
                 //A Simple Room availability updater to keep Hotel data changing and fresh, thus adding variability to the ouput from Hotel to Hotel:
                 if (this.current_number_of_available_rooms < 350) {
+                    
                     //Slowly release room occupants to simulate real world actions in a hotel.
                     Random rand = new Random();
                     this.current_number_of_available_rooms += rand.Next(1,5); 
+                    
                     //If more rooms were released than can be, adjust to maximum number of available rooms for the Hotel.
                     this.current_number_of_available_rooms = (this.current_number_of_available_rooms > Hotel.MAX_ROOMS) ? Hotel.MAX_ROOMS : this.current_number_of_available_rooms;
+                    
+                    //Update Price Model data.
+                    this.price_model.setAvailableRooms(this.current_number_of_available_rooms);
                 }//END ROOM RELEASE SIMULATOR0.
             }
         }
@@ -104,27 +108,33 @@ namespace Ecommerce
             }
         }
 
-        /// <summary>
-        /// This function simply uses the PriceModel inner class to help determine the new price of rooms for this Hotel.
-        /// </summary>
-        /// <returns>The new price of rooms for this hotel, based on the current number of available rooms, current price of rooms, and </returns>
-        private decimal calculateNewRoomPrice() {
-            //TODO::Implement with the PriceModel inner class.
-            return 0;
-        }
 
+        /// <summary>
+        /// PriceModel Class which is used exclusively by the Hotel to determine the next price.
+        /// </summary>
         private class PriceModel {
 
             private decimal current_price;
             private int available_number_of_rooms;
             private int modifier_count; 
 
+
+            /// <summary>
+            /// This is the args constructor of the PriceModel Class. 
+            /// </summary>
+            /// <param name="price">The current price of the Hotel's rooms.</param>
+            /// <param name="available_rooms">The current number of available rooms in the Hotel.</param>
             public PriceModel(decimal price, int available_rooms) {
                 this.current_price = BankService.formatCurrency(price);
                 this.available_number_of_rooms = available_rooms;
-                this.modifier_count = 0;
+                this.modifier_count = 1;
             }
 
+
+            /// <summary>
+            /// This function is the core of the Price model class. It uses the attributes of the price model to 
+            /// </summary>
+            /// <returns>The new hotel price of its rooms</returns>
             public decimal generateNewPrice() {
                 //Price Modifiers:
                 decimal price_increase = 0;//Initial value of the price increase modifier.
@@ -139,7 +149,8 @@ namespace Ecommerce
                 //If it is the "weekend" 0 == Sunday, 6 == Saturday give discount:
                 if (((this.modifier_count % 7) == 0) || ((this.modifier_count % 7) == 6))
                 {
-                    price_discount = BankService.formatCurrency(1.2M);//Set the discount modifier to 1.2 or essentially taking 20% off price whether rooms are in high demand or not.
+                    //Set the discount modifier to 1.2 or essentially taking 20% off if there is a price increase, if there is no high demand, take 45% off hotel room price for weekends.
+                    price_discount = (price_increase == 0) ? BankService.formatCurrency(1.45M) : BankService.formatCurrency(1.2M);
                 }
                 
                 this.current_price = BankService.formatCurrency(((this.current_price + price_increase) / price_discount));  //The actual Price model function.
@@ -147,6 +158,14 @@ namespace Ecommerce
                 else if (this.current_price > Hotel.MAX_PRICE) { this.current_price = BankService.formatCurrency(500); }    //Adjust price if model goes over maximum Hotel price.
                 modifier_count++;                                                                                           //Increment the modifier.
                 return this.current_price;                                                                                  //Return the new price.
+            }
+
+            /// <summary>
+            /// This function updates the value of the available rooms in the Price Model.
+            /// </summary>
+            /// <param name="available_rooms">The integer representation of the new number of rooms in a hotel that are available.</param>
+            public void setAvailableRooms(int available_rooms) {
+                this.available_number_of_rooms = available_rooms;
             }
         }
     }
