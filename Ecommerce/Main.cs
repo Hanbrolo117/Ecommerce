@@ -39,7 +39,6 @@ namespace Ecommerce
             ArrayList travel_agencies = new ArrayList();
             ArrayList hotel_threads = new ArrayList();
 
-            BankService bank_servicer = new BankService();  //Create a new Bank for the E-Commerce Ecosystem.
             Random rand = new Random();                     //Create a random number generator to randomly select the amount of money a travel agency with set up their bank account with.
 
             //Generate all of the Travel Agencies. have them apply for a new account with the bank, and finally, store them in the travel agency list:
@@ -50,7 +49,7 @@ namespace Ecommerce
                 
                 //Have the new travel agency apply for a new credit card number with the bank. The bank will create an account for the travel agency with the amount they deposited and
                 //issue them a new credit card number. Set the new agency's credit card number to this issued value returned by the Bnak's addClient function.:
-                new_agency.setCCNumber( bank_servicer.addClient(new_agency.getID(), rand.Next(1500, 5001)));
+                new_agency.setCCNumber( BankService.addClient(new_agency.getID(), rand.Next(1500, 5001)));
 
                 //Finally, store the new agency in the travel agenct arraylist:
                 travel_agencies.Add(new_agency);

@@ -28,7 +28,7 @@ namespace Ecommerce
         /// </summary>
         public void setCCNumber(int ccNumber) //Set the Credit Card Number via main method later
         {
-            credit_card = ccNumber;
+            this.credit_card = ccNumber;
         }
 
         /// <summary>
@@ -73,10 +73,19 @@ namespace Ecommerce
         /// </summary>
         private void placeOrder(OrderObject order)
         {
-            string encryptedOrder = EnDecoder.Encode(order); //encrypt the orderobject into a string
 
-            //TODO : create thread to place order?
-        
+            //Get the ID of the hotel who will receive this order for processing:
+            string hotel_id = order.getReceiverID();
+
+            //encrypt the orderobject into a string:
+            string encrypted_order = EnDecoder.Encode(order); 
+
+            
+            //Create a new OrderProcessing thread to handle the unprocessed order:
+            Thread place_order_thread = new Thread(() => OrderProcessing.submitOrderToProcess(encrypted_order, hotel_id));
+
+            //Start the thread:
+            place_order_thread.Start();
         }
 
         /// <summary>

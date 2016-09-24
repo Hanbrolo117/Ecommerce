@@ -102,7 +102,6 @@ namespace Ecommerce
 
             }//END IF STATEMENT
 
-
         }
 
         public void submitOrder(OrderObject order_to_submit) {

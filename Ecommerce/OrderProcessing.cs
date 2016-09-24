@@ -51,7 +51,7 @@ namespace Ecommerce
             order_has_been_processed_emitter += new orderHasBeenProcessed(order_been_processed_listener);
         }
 
-        public static string orderProcessor(string encoded_order_object) {
+        public static void orderProcessor(string encoded_order_object) {
             
             //Decode string into an object:
             OrderObject new_order_object = EnDecoder.Decode(encoded_order_object);
@@ -79,9 +79,10 @@ namespace Ecommerce
             string encoded_processed_order = EnDecoder.Encode(new_order_object);
 
             //Create a new thread to handle the processed order:
-            Thread process_order_thread = new Thread(() => OrderProcessing.submitProcessedOrderObject(encoded_processed_order, travel_agency_id) );
+            Thread processed_order_thread = new Thread(() => OrderProcessing.submitProcessedOrderObject(encoded_processed_order, travel_agency_id) );
 
-            return "";//TODO::Implement.
+            //Start the thread:
+            processed_order_thread.Start();
         }
 
 
