@@ -48,7 +48,7 @@ namespace Ecommerce
          *  +void setOneCell(string encodedMessage): set cell's encoded message
          *  +string getOneCell(): get cell cencoded message
          */
-        class MultiCellBuffer
+        public class MultiCellBuffer
         {
             Semaphore pool = new Semaphore(0, 3);
             Cell[] cellArray = new Cell[3];
