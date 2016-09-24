@@ -30,6 +30,16 @@ namespace Ecommerce
         }
 
 
+        public static void submitOrderToProcess(string encoded_order, string hotel_id) {
+            //TODO::Add processed order to the processed order multicellbuffer:
+            //order_object_to_process.addObjectWithId(encoded_order, hotel_id);
+
+            if (add_order_to_process_emitter != null) {
+                add_order_to_process_emitter(hotel_id);//Notify Hotel Listener/Handler(s) that an order that needs to be processed has been added to the multiCellBuffer.
+            }
+        }
+
+
         public void addOrderToProcessListener(Action<string> order_to_process_listener) {
             add_order_to_process_emitter += new addOrderToProcess(order_to_process_listener);
         }
@@ -44,7 +54,11 @@ namespace Ecommerce
 
 
         public static string getProcessedOrderObject(string travel_agency_id) {
-            //return (string)processed_order_objects.getOrderByID(travel_agency_id);
+            //return (string)processed_order_objects.getOrderById(travel_agency_id);
+        }
+
+        public static string getOrderToProcess(string hotel_id) {
+            //return (string)order_object_to_process.getOrderById(hotel_id);
         }
     }
 }

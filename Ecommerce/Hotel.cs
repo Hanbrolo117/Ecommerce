@@ -91,7 +91,9 @@ namespace Ecommerce
         public void orderProcessHandler(string hotel_id) {
 
             if (this.id == hotel_id) {
-
+                //Get string from MultiCellBuffer
+                //Pass it to OrderProcessing.processOrder function
+                    //processOrder function, upon completion emits event to processed order which is picked up by the TravelAgency
 
 
             }//END IF STATEMENT
