@@ -14,6 +14,11 @@ namespace Ecommerce
 
     namespace Ecommerce
     {
+        /**
+         *  Cell
+         *  Fields: encoded string and an id number
+         *  Functions: getters and setters
+         **/
         public class Cell
         {
             string encodedStr;
@@ -39,6 +44,12 @@ namespace Ecommerce
             {
                 this.encodedStr = message;
             }
+
+            public void setID(int idnum)
+            {
+                this.id = idnum;
+            }
+
         }
         class MultiCellBuffer
         {
