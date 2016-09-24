@@ -16,6 +16,7 @@ namespace Ecommerce
         private decimal amount;
         private decimal unitPrice;
         private Boolean valid_order;
+        private int roomsOrdered;
         //-------------------------------
 
 
@@ -29,6 +30,7 @@ namespace Ecommerce
             this.amount = 0;
             this.unitPrice = 0;
             this.valid_order = false;
+            this.roomsOrdered = 0;
         }
 
         //Sender = travel Agency, receiver = hotel
@@ -38,16 +40,18 @@ namespace Ecommerce
         /// <param name="sd_id">The id of the Travel Agency that is making the order.</param>
         /// <param name="rcvr_id">The id of the Hotel that is receiving the order from the travel agency.</param>
         /// <param name="cc_number">The credit card number the travel agency will use to pay for the order.</param>
+        /// <param name="">This is the number of rooms that were ordered in this OrderObject</param>
         /// <param name="amt">The amount that will be charged to the account associated with the given credit card number.</param>
         /// <param name="ut_price">The price at which each room ordered was purchased at.</param>
         /// <param name="is_v">A boolean identifier for determining whether this order was successful or not.</param>
-        public OrderObject(string sd_id, string rcvr_id, int cc_number, decimal amt, decimal ut_price, Boolean is_v) {
+        public OrderObject(string sd_id, string rcvr_id, int cc_number, int number_of_rooms_ordered, decimal amt, decimal ut_price, Boolean is_v) {
             this.senderID = sd_id;
             this.receiverID = rcvr_id;
             this.cardNo = cc_number;
             this.amount = amt;
             this.unitPrice = ut_price;
             this.valid_order = is_v;
+            this.roomsOrdered = number_of_rooms_ordered;
         }
 
         /// <summary>
@@ -104,6 +108,13 @@ namespace Ecommerce
         }
 
         /// <summary>
+        /// Setter for the number of rooms ordered in this OrderObject.
+        /// </summary>
+        /// <param name="rooms_ordered">number of rooms ordered.</param>
+        public void setRoomsOrdered(int rooms_ordered) {
+            this.roomsOrdered = rooms_ordered;
+        }
+        /// <summary>
         /// Getter for the SenderID.
         /// </summary>
         /// <returns>The senderID, aka the TravelAgency ID</returns>
@@ -154,6 +165,14 @@ namespace Ecommerce
         /// <returns>The boolean confirmation of this OrderObject.</returns>
         public Boolean isValid() {
             return this.valid_order;
+        }
+
+        /// <summary>
+        /// Returns the number of rooms that were ordered in this OrderObject.
+        /// </summary>
+        /// <returns>the integer number of rooms ordered in this OrderObject.</returns>
+        public int getNumberOfRoomsOrdered() {
+            return this.roomsOrdered;
         }
 
     }

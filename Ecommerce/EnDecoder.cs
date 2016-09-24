@@ -28,6 +28,7 @@ namespace Ecommerce
             orderObj.setAmount(Convert.ToDecimal(orderData[3]));        //Set the Amount
             orderObj.setUnitPrice(Convert.ToDecimal(orderData[4]));     //Set the Unit Price
             orderObj.setIsValid(Convert.ToBoolean(orderData[5]));       //Set the Order Validator
+            orderObj.setRoomsOrdered(Convert.ToInt32(orderData[6]));
             //Return the newly orderObject that has been created from the "decoded" data:
             return orderObj;
         }
@@ -45,6 +46,7 @@ namespace Ecommerce
             orderObj_toString += (" " + orderObj.getAmount());
             orderObj_toString += (" " + orderObj.getUnitPrice());
             orderObj_toString += (" " + orderObj.isValid());
+            orderObj_toString += (" " + orderObj.getNumberOfRoomsOrdered());
             //Return the encoded String of the orderObject passed in:
             return orderObj_toString;
         }

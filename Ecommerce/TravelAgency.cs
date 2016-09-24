@@ -18,6 +18,7 @@ namespace Ecommerce
         /// <summary>
         /// This is the args constructor of the TravelAgency class. 
         /// </summary>
+        /// <param name="agency_id">String to be set as the id of this TravelAgency</param>
         public TravelAgency (string agency_id)
         {
             this.agency_id = agency_id;
@@ -28,14 +29,16 @@ namespace Ecommerce
         /// <summary>
         /// This sets the credit card number taking one parameter, the credit card number
         /// </summary>
-        public void setCCNumber(int ccNumber) //Set the Credit Card Number via main method later
+        /// /// <param name="cc_number">The new credit card number to set for this TravelAgency</param>
+        public void setCCNumber(int cc_number) //Set the Credit Card Number via main method later
         {
-            this.credit_card = ccNumber;
+            this.credit_card = cc_number;
         }
 
         /// <summary>
         /// This gets the current agency_ID string
         /// </summary>
+        /// <returns>returns a string representation of this TravelAgency</returns>
         public string getID() { //Get the agency ID (e.g. Agency1, Agency2, Agency4...)
             return this.agency_id;
         }
@@ -43,6 +46,10 @@ namespace Ecommerce
         /// <summary>
         /// This is the main function that handles hotel price cuts via PriceCut delegate created in Hotel.cs
         /// </summary>
+        /// <param name="current_price">the current price of rooms in the Hotel.</param>
+        /// <param name="new_price">the new price of rooms in the Hotel.</param>
+        /// <param name="available_rooms">the current number of available rooms in the Hotel.</param>
+        /// <param name="hotel_id">The string id of the Hotel.</param>
         public void hotelPriceBeenCut(decimal current_price, decimal new_price, int available_rooms, string hotel_id) //Using delegate in hotel.cs
         {
             int rooms_to_order;
@@ -65,7 +72,7 @@ namespace Ecommerce
             //Calculate the subTotal:
             decimal amount = BankService.formatCurrency(rooms_to_order*new_price);
             //create a new order Object:
-            OrderObject new_order_object = new OrderObject(this.agency_id, hotel_id, this.credit_card, amount, new_price, false);
+            OrderObject new_order_object = new OrderObject(this.agency_id, hotel_id, this.credit_card, rooms_to_order,amount, new_price, false);
             //Place Order:
             placeOrder(new_order_object);
         }
@@ -73,6 +80,7 @@ namespace Ecommerce
         /// <summary>
         /// This takes an OrderObject and encrypts it into a string.
         /// </summary>
+        /// <param name="order">The OrderObject to place an order with.</param>
         private void placeOrder(OrderObject order)
         {
 
@@ -93,18 +101,42 @@ namespace Ecommerce
         /// <summary>
         /// This takes an OrderObject to be confirmed, and creates a timestamp of when this is called as well as writing to Console
         /// </summary>
-        private void confirmOrder(OrderObject orderConfirm)
+        /// <param name="order_confirm">The OrderObject retreived from the ProcessedOrder MultiCellBuffer.</param>
+        private void confirmOrder(OrderObject order_confirm)
         {
             string timeStamp = DateTime.Now.ToString(); //Create a time stamp for when order is confirmed
-            Console.WriteLine(orderConfirm); //Temporarily writeline for now, but we will most likely be doing GUI rather than console
+            
+            //Print Order Confirmation received message:
+            Console.WriteLine("Travel Agency {0} received a new order confirmation:", this.agency_id);
+
+            //Print header and Body of Order Confirmation Receipt:
+            Console.WriteLine("---------------------------------");
+            Console.WriteLine("Order Confirmation:");
+            Console.WriteLine("Agency ID: {0}", order_confirm.getSenderID());
+            Console.WriteLine("Hotel ID: {0}", order_confirm.getReceiverID());
+            Console.WriteLine("Rooms Ordered: {0}", order_confirm.getNumberOfRoomsOrdered());
+            Console.WriteLine("Room Price: {0}", order_confirm.getUnitPrice());
+            Console.WriteLine("Total(+tax): {0}", order_confirm.getAmount());
+            if (order_confirm.isValid()){
+                Console.WriteLine("Order Confirmation: VALID");
+            }
+            else {
+                Console.WriteLine("Order Confirmation: NOT VALID");
+            }
+
+            //Footer of the Order Confirmation Receipt:
+            Console.WriteLine("TimeStamp: {0}",timeStamp);
+            Console.WriteLine("---------------------------------");
+            Console.WriteLine();        
         }
 
         /// <summary>
         /// This takes the ID of the TravelAgency it will be processing for and checks for correct destination. It then processes the order and confirms it.
         /// </summary>
-        public void processedOrder(string toTravelAgency) //Method to check if order was meant for specific travel agency and confirm it
+        /// <param name="travel_agency_id">The travelAgency id that was emitted </param>
+        public void processedOrder(string travel_agency_id) //Method to check if order was meant for specific travel agency and confirm it
         {
-            if (toTravelAgency == this.agency_id) //Basic check for correct agency ID
+            if (travel_agency_id  == this.agency_id) //Basic check for correct agency ID
             {
                 string encryptedOrder = OrderProcessing.getProcessedOrderObject(this.agency_id); //Encrypted order is retrieved from OrderProcessing
 
