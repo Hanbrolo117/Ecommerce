@@ -42,7 +42,7 @@ namespace Ecommerce
             this.price_model = new PriceModel(this.price, this.current_number_of_available_rooms);  // Instantiate a new Price Model object for this Hotel.
             this.price = this.price_model.generateNewPrice();                                       // TODO::Initialize first price value using the price model;
 
-            
+            OrderProcessing.addOrderToProcessListener(orderProcessHandler);
         }
 
 
@@ -92,8 +92,7 @@ namespace Ecommerce
 
             if (this.id == hotel_id) {
                 //Get string from MultiCellBuffer
-                //Pass it to OrderProcessing.processOrder function
-                    //processOrder function, upon completion emits event to processed order which is picked up by the TravelAgency
+                string encoded_order_object = OrderProcessing.getOrderToProcess(this.id);
 
 
             }//END IF STATEMENT

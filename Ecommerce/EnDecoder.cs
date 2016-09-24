@@ -14,7 +14,7 @@ namespace Ecommerce
         /// </summary>
         /// <param name="orderStr">The "encoded" OrderObject string to decode into an OrderObject.</param>
         /// <returns>The OderObject that was "decoded" from the "encoded" data passed in.</returns>
-        public static OrderObject Decode(String orderStr) {
+        public static OrderObject Decode(string orderStr) {
             //"decode" the "encoded" data:
             string[] orderData = orderStr.Split(' ');
 
@@ -27,7 +27,7 @@ namespace Ecommerce
             orderObj.setCardNo(Convert.ToInt32(orderData[2]));          //Set the Card Number
             orderObj.setAmount(Convert.ToDecimal(orderData[3]));        //Set the Amount
             orderObj.setUnitPrice(Convert.ToDecimal(orderData[4]));     //Set the Unit Price
-
+            orderObj.setIsValid(Convert.ToBoolean(orderData[5]));       //Set the Order Validator
             //Return the newly orderObject that has been created from the "decoded" data:
             return orderObj;
         }
@@ -44,7 +44,7 @@ namespace Ecommerce
             orderObj_toString += (" " + orderObj.getCardNo());
             orderObj_toString += (" " + orderObj.getAmount());
             orderObj_toString += (" " + orderObj.getUnitPrice());
-
+            orderObj_toString += (" " + orderObj.isValid());
             //Return the encoded String of the orderObject passed in:
             return orderObj_toString;
         }

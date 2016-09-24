@@ -40,15 +40,20 @@ namespace Ecommerce
         }
 
 
-        public void addOrderToProcessListener(Action<string> order_to_process_listener) {
+        public static void addOrderToProcessListener(Action<string> order_to_process_listener) {
             add_order_to_process_emitter += new addOrderToProcess(order_to_process_listener);
         }
 
-        public void addOrderBeenProcessedListener(Action<string> order_been_processed_listener) {
+        public static void addOrderBeenProcessedListener(Action<string> order_been_processed_listener) {
             order_has_been_processed_emitter += new orderHasBeenProcessed(order_been_processed_listener);
         }
 
-        public string orderProcessor(OrderObject orderObject) {
+        public static string orderProcessor(string encoded_order_object) {
+            //Decode string into an object:
+            OrderObject newOrderObject = EnDecoder.Decode(encoded_order_object);
+
+
+
             return "";//TODO::Implement.
         }
 
