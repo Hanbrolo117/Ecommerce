@@ -59,6 +59,7 @@
     </ApplicationDefinition>
     <Compile Include="EnDecoder.cs" />
     <Compile Include="Hotel.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="MultiCellBuffer.cs" />
     <Compile Include="OrderObject.cs" />
     <Compile Include="OrderProcessing.cs" />

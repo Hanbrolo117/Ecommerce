@@ -8,16 +8,12 @@ namespace Ecommerce
 {
     class TravelAgency
     {
-        int agency_id; //Variable N where N = 5 (TravelAgency1 --> TravelAgency5)
-        int credit_card;
+        private string agency_id; //Variable N where N = 5 (TravelAgency1 --> TravelAgency5)
+        private int credit_card;
 
-        public TravelAgency (int agency_id, int credit_card)
+        public TravelAgency (string agency_id)
         {
             this.agency_id = agency_id;
-
-
-            this.credit_card = credit_card;
-           
             //TODO: OrderProcessing
         }
 
@@ -26,12 +22,16 @@ namespace Ecommerce
             credit_card = ccNumber;
         }
 
-        public void hotelPriceBeenCut(decimal current_price, decimal new_price, string id)
+        public string getID() {
+            return this.agency_id;
+        }
+
+        public void hotelPriceBeenCut(decimal current_price, decimal new_price, int available_rooms, string id)
         {
             int rooms_to_order;
             int demand = 0; //Demand is a variable that will be used as a multiplier for how many rooms to order
 
-            if (availablerooms < (Hotel.MAX_ROOMS*.20))
+            if (available_rooms < (Hotel.MAX_ROOMS*.20))
             { //If current availability is less than 20% of max rooms
                 demand++; //Increase demand
             } else
@@ -44,7 +44,7 @@ namespace Ecommerce
                 demand++; //If the new price is lower than the older price, increase demand
             }
 
-            rooms_to_order = (availablerooms - (10 * demand)); //Take whatever rooms are available, subtract it by 10 * demand
+            rooms_to_order = (available_rooms - (10 * demand)); //Take whatever rooms are available, subtract it by 10 * demand
         }
 
         private void placeOrder(OrderObject order)
