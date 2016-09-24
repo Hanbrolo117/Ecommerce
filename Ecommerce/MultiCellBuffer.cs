@@ -8,5 +8,6 @@ namespace Ecommerce
 {
     class MultiCellBuffer
     {
+
     }
 }
