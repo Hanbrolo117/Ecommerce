@@ -87,11 +87,11 @@ namespace Ecommerce
 
 
         public static string getProcessedOrderObject(string travel_agency_id) {
-            //return (string)processed_order_objects.getOrderById(travel_agency_id);
+            return processed_order_objects.getOrderById(travel_agency_id);
         }
 
         public static string getOrderToProcess(string hotel_id) {
-            //return (string)order_object_to_process.getOrderById(hotel_id);
+            return order_object_to_process.getOrderById(hotel_id);
         }
     }
 }
