@@ -71,7 +71,7 @@ namespace Ecommerce
         {
             //wait for a resource to be free
             pool.WaitOne();
-
+            
             //once there is a resource freeing up
             //try enter each cell to find an available cell
             for (int i = 0; i < 3; i++)

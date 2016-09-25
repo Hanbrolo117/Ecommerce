@@ -36,10 +36,8 @@ namespace Ecommerce
             //Add processed order to the processed order multicellbuffer:
             processed_order_objects.setOneCell(encoded_order, travel_agency_id);
 
-            if (order_has_been_processed_emitter != null) {
-                //Notify TravelAgency Listener/Handler that a processed order has been added to the multicellBuffer:
-                order_has_been_processed_emitter(travel_agency_id);
-            }
+            //Notify TravelAgency Listener/Handler that a processed order has been added to the multicellBuffer:
+            order_has_been_processed_emitter?.Invoke(travel_agency_id);
         }
 
 
@@ -49,13 +47,16 @@ namespace Ecommerce
         /// <param name="encoded_order">The string encoded OrderObject.</param>
         /// <param name="hotel_id">the Hotel's id to be mapped to the encoded string with.</param>
         public static void submitOrderToProcess(string encoded_order, string hotel_id) {
+           
             //Add processed order to the processed order multicellbuffer:
             order_object_to_process.setOneCell(encoded_order, hotel_id);
 
-            if (add_order_to_process_emitter != null) {
-                //Notify Hotel Listener/Handler(s) that an order that needs to be processed has been added to the multiCellBuffer:
-                add_order_to_process_emitter(hotel_id);
+            Console.WriteLine("Processing OrderObject for Hotel {0}", hotel_id);
+            if (add_order_to_process_emitter == null) {
+                Console.WriteLine("\nUH-OH\n");
             }
+            //Notify Hotel Listener/Handler(s) that an order that needs to be processed has been added to the multiCellBuffer:
+            add_order_to_process_emitter?.Invoke(hotel_id);
         }
 
 

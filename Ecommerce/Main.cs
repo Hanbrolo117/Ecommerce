@@ -16,8 +16,8 @@ namespace Ecommerce
         /// </summary>
         /// <param name="args">Any commandline arguments passed in. This application does not use this however.</param>
         static void main(string[] args) {
-            const int NUM_OF_HOTELS = 3;
-            const int NUM_OF_TRAVEL_AGENCIES = 5;
+            const int NUM_OF_HOTELS = 1;
+            const int NUM_OF_TRAVEL_AGENCIES = 2;
 
             //Print Out the E-Commerce ecosystem setup:
             //--------------------------------------------------------------------------------

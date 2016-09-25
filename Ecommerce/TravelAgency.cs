@@ -52,6 +52,7 @@ namespace Ecommerce
         /// <param name="hotel_id">The string id of the Hotel.</param>
         public void hotelPriceBeenCut(decimal current_price, decimal new_price, int available_rooms, string hotel_id) //Using delegate in hotel.cs
         {
+            Console.WriteLine("PriceCut Event successfully emitted. TravelAgency {0}",this.agency_id);
             int rooms_to_order;
             int demand = 0; //Demand is a variable that will be used as a multiplier for how many rooms to order
 

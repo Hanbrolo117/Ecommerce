@@ -44,6 +44,7 @@ namespace Ecommerce
             this.price = this.price_model.generateNewPrice();                                       // TODO::Initialize first price value using the price model;
 
             OrderProcessing.addOrderToProcessListener(orderProcessHandler);
+
         }
 
 
@@ -55,11 +56,11 @@ namespace Ecommerce
            //Continue this Price Model Updating until the maximum number of price cuts have been made.
             while (current_pricecuts_made <= MAX_PRICECUTS_ALLOWED) {
                 //To add some sense of time passing in the application.
-                Thread.Sleep(500);
+                Thread.Sleep(1500);
 
                 //TODO::UPDATE PRICE MODEL
                 this.updateRoomPrice(this.price_model.generateNewPrice());
-
+                
                 //A Simple Room availability updater to keep Hotel data changing and fresh, thus adding variability to the ouput from Hotel to Hotel:
                 if (this.current_number_of_available_rooms < 350) {
                     
@@ -94,10 +95,10 @@ namespace Ecommerce
         /// </summary>
         /// <param name="hotel_id">The Id of the hotel that needs to process the respective order that triggered the orderToBeProcessed event</param>
         public void orderProcessHandler(string hotel_id) {
-
+            Console.WriteLine("\nthis.id = {0}    hotel_id = {1}\n",this.id,hotel_id);
             //If this Hotel matches with this event that emitted this:
             if (this.id == hotel_id) {
-
+                Console.WriteLine("\nHotel {0} has been notified to process order.\n",hotel_id);
                 //Get encoded orderObject string from MultiCellBuffer:
                 string encoded_order__object_to_process = OrderProcessing.getOrderToProcess(this.id);
 
@@ -114,6 +115,7 @@ namespace Ecommerce
         /// </summary>
         /// <param name="new_room_price">The new price of hotel rooms. (as determined by the price model)</param>
         private void updateRoomPrice(decimal new_room_price) {
+            Console.WriteLine("Curent Price: {0} | New Price: {1}", this.price, new_room_price);
             decimal current_price = this.price;     //Get the current price before updating the price.
             this.price = new_room_price;            //Update the price of rooms in this Hotel.
             Boolean is_new_price_lower = (new_room_price < current_price) ? true : false;
@@ -177,7 +179,10 @@ namespace Ecommerce
                 this.current_price = BankService.formatCurrency(((this.current_price + price_increase) / price_discount));  //The actual Price model function.
                 if (this.current_price < Hotel.MIN_PRICE) { this.current_price = BankService.formatCurrency(50); }          //Adjust price if model goes over minimum Hotel price.
                 else if (this.current_price > Hotel.MAX_PRICE) { this.current_price = BankService.formatCurrency(500); }    //Adjust price if model goes over maximum Hotel price.
-                modifier_count++;                                                                                           //Increment the modifier.
+                this.modifier_count++;                                                                                           //Increment the modifier.
+
+                Random test = new Random();
+                this.current_price = test.Next(MIN_PRICE,MAX_PRICE+1);
                 return this.current_price;                                                                                  //Return the new price.
             }
 
