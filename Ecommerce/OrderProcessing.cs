@@ -52,10 +52,6 @@ namespace Ecommerce
             //Add processed order to the processed order multicellbuffer:
             order_object_to_process.setOneCell(encoded_order, hotel_id);
 
-            Console.WriteLine("Processing OrderObject for Hotel {0}", hotel_id);
-            if (add_order_to_process_emitter == null) {
-                Console.WriteLine("\nUH-OH\n");
-            }
             //Notify Hotel Listener/Handler(s) that an order that needs to be processed has been added to the multiCellBuffer:
             add_order_to_process_emitter?.Invoke(hotel_id);
         }
@@ -86,10 +82,8 @@ namespace Ecommerce
         public static void orderProcessor(string encoded_order_object) {
 
             //Decode string into an object:
-            Console.WriteLine("{0}", encoded_order_object);
-            Thread.Sleep(5000);
             OrderObject new_order_object = EnDecoder.Decode(encoded_order_object);
-            
+
             //Update total amount to account for Sales tax:
             decimal total = BankService.formatCurrency((new_order_object.getAmount() + (new_order_object.getAmount() * SALES_TAX)));
             new_order_object.setAmount(total);
@@ -113,6 +107,7 @@ namespace Ecommerce
             string encoded_processed_order = EnDecoder.Encode(new_order_object);
 
             //Create a new thread to handle the processed order:
+            OrderProcessing.submitProcessedOrderObject(encoded_processed_order, travel_agency_id);
             Thread processed_order_thread = new Thread(() => OrderProcessing.submitProcessedOrderObject(encoded_processed_order, travel_agency_id) );
 
             //Start the thread:
@@ -127,7 +122,13 @@ namespace Ecommerce
         /// <param name="travel_agency_id">The travelAgency's ID to find the associated encoded OrderObject string in the ProcessedOrders MultiCellBuffer.</param>
         /// <returns>The string of the encoded OrderObject that is mapped to the passed in TravelAgency Id.</returns>
         public static string getProcessedOrderObject(string travel_agency_id) {
-            return processed_order_objects.getOneCell(travel_agency_id);
+            string to_return = "";
+            while (to_return.Length == 0)
+            {
+                to_return = processed_order_objects.getOneCell(travel_agency_id);
+                Thread.Sleep(500);
+            }
+            return to_return;
         }
 
 

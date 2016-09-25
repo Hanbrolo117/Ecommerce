@@ -21,9 +21,11 @@ namespace Ecommerce
         /// <param name="agency_id">String to be set as the id of this TravelAgency</param>
         public TravelAgency (string agency_id)
         {
+            //Set TravelAgencies ID:
             this.agency_id = agency_id;
 
-            OrderProcessing.addOrderToProcessListener(processedOrder);
+            //Add function Handler for processed orders:
+            OrderProcessing.addOrderBeenProcessedListener(processedOrder);
         }
 
         /// <summary>
@@ -52,30 +54,18 @@ namespace Ecommerce
         /// <param name="hotel_id">The string id of the Hotel.</param>
         public void hotelPriceBeenCut(decimal current_price, decimal new_price, int available_rooms, string hotel_id) //Using delegate in hotel.cs
         {
-            Console.WriteLine("PriceCut Event successfully emitted. TravelAgency {0}",this.agency_id);
             int rooms_to_order;
             int demand = 0; //Demand is a variable that will be used as a multiplier for how many rooms to order
             int sum = Hotel.MAX_PRICE + Hotel.MIN_PRICE;
             int avg = sum / 2;
             Boolean do_buy = (new_price > (decimal)(1.15 * avg)) ? false : true;
 
-            if (available_rooms < (Hotel.MAX_ROOMS*.20))
-            { //If current availability is less than 20% of max rooms
-                demand++; //Increase demand
-            } else
+            //Take anywhere from 1-25% of the available rooms:
+            Random rand = new Random();
+            rooms_to_order = (int)(available_rooms/rand.Next(20,80));
 
-            if(current_price < new_price)
+            if ((do_buy) && (rooms_to_order > 0))
             {
-                demand--; //If the new price is higher than the old price, decrease demand
-            } else
-            {
-                demand++; //If the new price is lower than the older price, increase demand
-            }
-
-            if (do_buy)
-            {
-                rooms_to_order = (available_rooms - (10 * demand)); //Take whatever rooms are available, subtract it by 10 * demand
-                                                                    //Calculate the subTotal:
                 decimal amount = BankService.formatCurrency(rooms_to_order * new_price);
                 //create a new order Object:
                 OrderObject new_order_object = new OrderObject(this.agency_id, hotel_id, this.credit_card, rooms_to_order, amount, new_price, false);

@@ -66,7 +66,7 @@ namespace Ecommerce
                     
                     //Slowly release room occupants to simulate real world actions in a hotel.
                     Random rand = new Random();
-                    this.current_number_of_available_rooms += rand.Next(1,5); 
+                    this.current_number_of_available_rooms += rand.Next(1,56); 
                     
                     //If more rooms were released than can be, adjust to maximum number of available rooms for the Hotel.
                     this.current_number_of_available_rooms = (this.current_number_of_available_rooms > Hotel.MAX_ROOMS) ? Hotel.MAX_ROOMS : this.current_number_of_available_rooms;
@@ -95,12 +95,11 @@ namespace Ecommerce
         /// </summary>
         /// <param name="hotel_id">The Id of the hotel that needs to process the respective order that triggered the orderToBeProcessed event</param>
         public void orderProcessHandler(string hotel_id) {
-            Console.WriteLine("\nthis.id = {0}    hotel_id = {1}\n",this.id,hotel_id);
             //If this Hotel matches with this event that emitted this:
             if (this.id == hotel_id) {
-                Console.WriteLine("\nHotel {0} has been notified to process order.\n",hotel_id);
                 //Get encoded orderObject string from MultiCellBuffer:
                 string encoded_order__object_to_process = OrderProcessing.getOrderToProcess(this.id);
+
                 //Process Order via the OrderProcessing class:
                 OrderProcessing.orderProcessor(encoded_order__object_to_process);
 
@@ -114,14 +113,13 @@ namespace Ecommerce
         /// </summary>
         /// <param name="new_room_price">The new price of hotel rooms. (as determined by the price model)</param>
         private void updateRoomPrice(decimal new_room_price) {
-            Console.WriteLine("Curent Price: {0} | New Price: {1}", this.price, new_room_price);
             decimal current_price = this.price;     //Get the current price before updating the price.
             this.price = new_room_price;            //Update the price of rooms in this Hotel.
             Boolean is_new_price_lower = (new_room_price < current_price) ? true : false;
 
             //If the new price based on the price model is indeed lower than what the current price was AND there exists AT LEAST one subscriber to our delegate:
             if ((is_new_price_lower) && (this.price_cut_event != null)) {
-
+                Console.WriteLine("\nHotel {0} is having a Price Cut Event!\nPrevious Price: {1}\nNew Price: {2}\n", this.id, current_price, new_room_price);
                 //Increment the number of price cuts made.
                 this.current_pricecuts_made++;
 

@@ -85,8 +85,9 @@ namespace Ecommerce
                     break;
                 }
             }
-            Console.WriteLine("\nFinished Writing: {0} \nFor cell for ID: {1}\n",message, ID);
-            Thread.Sleep(30000);
+            //Console.WriteLine("\nFinished Writing: {0} \nFor cell for ID: {1}\n",message, ID);
+            //Thread.Sleep(30000);
+
         }
 
         /*
