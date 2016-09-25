@@ -53,7 +53,7 @@ namespace Ecommerce
         */
     public class MultiCellBuffer
     {
-        Semaphore pool = new Semaphore(0, 3);
+        Semaphore pool = new Semaphore(3, 3);
         Cell[] cellArray = new Cell[3];
 
         //Contructor - Initializing cells
@@ -82,7 +82,7 @@ namespace Ecommerce
                     cellArray[i].setMessage(message);
                     Monitor.Exit(cellArray[i]);          //unlock the object after writing
                     pool.Release(1);
-                    i = 4;
+                    break;
                 }
             }
         }
@@ -112,13 +112,13 @@ namespace Ecommerce
                         cellArray[i].setMessage("");
                         pool.Release(1);
                         Monitor.Exit(cellArray[i]);
-                        i = 4;
+                        break;
                     }
                     else
                     {
                         Monitor.Exit(cellArray[i]);
                         pool.Release(1);
-                        i = 4;
+                        break;
                     }
                 }
             }
