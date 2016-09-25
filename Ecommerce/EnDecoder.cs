@@ -17,7 +17,6 @@ namespace Ecommerce
         public static OrderObject Decode(string orderStr) {
             //"decode" the "encoded" data:
             string[] orderData = orderStr.Split(' ');
-
             //Create a new orderObject to set up with the "decoded" data:
             OrderObject orderObj = new OrderObject();
 

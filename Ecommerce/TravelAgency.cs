@@ -55,6 +55,9 @@ namespace Ecommerce
             Console.WriteLine("PriceCut Event successfully emitted. TravelAgency {0}",this.agency_id);
             int rooms_to_order;
             int demand = 0; //Demand is a variable that will be used as a multiplier for how many rooms to order
+            int sum = Hotel.MAX_PRICE + Hotel.MIN_PRICE;
+            int avg = sum / 2;
+            Boolean do_buy = (new_price > (decimal)(1.15 * avg)) ? false : true;
 
             if (available_rooms < (Hotel.MAX_ROOMS*.20))
             { //If current availability is less than 20% of max rooms
@@ -69,13 +72,16 @@ namespace Ecommerce
                 demand++; //If the new price is lower than the older price, increase demand
             }
 
-            rooms_to_order = (available_rooms - (10 * demand)); //Take whatever rooms are available, subtract it by 10 * demand
-            //Calculate the subTotal:
-            decimal amount = BankService.formatCurrency(rooms_to_order*new_price);
-            //create a new order Object:
-            OrderObject new_order_object = new OrderObject(this.agency_id, hotel_id, this.credit_card, rooms_to_order,amount, new_price, false);
-            //Place Order:
-            placeOrder(new_order_object);
+            if (do_buy)
+            {
+                rooms_to_order = (available_rooms - (10 * demand)); //Take whatever rooms are available, subtract it by 10 * demand
+                                                                    //Calculate the subTotal:
+                decimal amount = BankService.formatCurrency(rooms_to_order * new_price);
+                //create a new order Object:
+                OrderObject new_order_object = new OrderObject(this.agency_id, hotel_id, this.credit_card, rooms_to_order, amount, new_price, false);
+                //Place Order:
+                placeOrder(new_order_object);
+            }
         }
 
         /// <summary>

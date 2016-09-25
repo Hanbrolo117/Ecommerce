@@ -13,6 +13,7 @@ namespace Ecommerce
     {
         //OrderProcessing Attributes:
         //-------------------------------------------------------------------------------------------------------
+        static ReaderWriterLock rwl = new ReaderWriterLock();
         private delegate void addOrderToProcess(string hotel_id);
         private delegate void orderHasBeenProcessed(string travel_agency_id);
 
@@ -83,8 +84,10 @@ namespace Ecommerce
         /// </summary>
         /// <param name="encoded_order_object">The encoded OrderObject string to process as an OrderObject, once it is decoded of course.</param>
         public static void orderProcessor(string encoded_order_object) {
-            
+
             //Decode string into an object:
+            Console.WriteLine("{0}", encoded_order_object);
+            Thread.Sleep(5000);
             OrderObject new_order_object = EnDecoder.Decode(encoded_order_object);
             
             //Update total amount to account for Sales tax:
