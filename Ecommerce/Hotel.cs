@@ -101,7 +101,6 @@ namespace Ecommerce
                 Console.WriteLine("\nHotel {0} has been notified to process order.\n",hotel_id);
                 //Get encoded orderObject string from MultiCellBuffer:
                 string encoded_order__object_to_process = OrderProcessing.getOrderToProcess(this.id);
-
                 //Process Order via the OrderProcessing class:
                 OrderProcessing.orderProcessor(encoded_order__object_to_process);
 

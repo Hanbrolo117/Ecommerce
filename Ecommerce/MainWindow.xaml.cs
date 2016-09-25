@@ -27,7 +27,7 @@ namespace Ecommerce
         {
             InitializeComponent();
 
-                const int NUM_OF_HOTELS = 1;
+            const int NUM_OF_HOTELS = 1;
                 const int NUM_OF_TRAVEL_AGENCIES = 2;
 
                 //Print Out the E-Commerce ecosystem setup:
