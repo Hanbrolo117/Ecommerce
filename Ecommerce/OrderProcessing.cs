@@ -134,8 +134,15 @@ namespace Ecommerce
         /// </summary>
         /// <param name="hotel_id">The string of the encoded OrderObject that is mapped to the passed in Hotel Id.</param>
         /// <returns></returns>
-        public static string getOrderToProcess(string hotel_id) {
-            return order_object_to_process.getOneCell(hotel_id);
+        public static string getOrderToProcess(string hotel_id)
+        {
+            string to_return = "";
+            while (to_return.Length == 0)
+            {
+                to_return = order_object_to_process.getOneCell(hotel_id);
+                Thread.Sleep(500);
+            }
+            return to_return;
         }
     }
 }
