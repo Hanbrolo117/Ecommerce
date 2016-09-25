@@ -27,8 +27,8 @@ namespace Ecommerce
         {
             InitializeComponent();
 
-            const int NUM_OF_HOTELS = 1;
-                const int NUM_OF_TRAVEL_AGENCIES = 2;
+            const int NUM_OF_HOTELS = 3;
+                const int NUM_OF_TRAVEL_AGENCIES = 5;
 
                 //Print Out the E-Commerce ecosystem setup:
                 //--------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ namespace Ecommerce
 
                     //Have the new travel agency apply for a new credit card number with the bank. The bank will create an account for the travel agency with the amount they deposited and
                     //issue them a new credit card number. Set the new agency's credit card number to this issued value returned by the Bnak's addClient function.:
-                    new_agency.setCCNumber(BankService.addClient(new_agency.getID(), rand.Next(1500, 5001)));
+                    new_agency.setCCNumber(BankService.addClient(new_agency.getID(), rand.Next(30000, 80001)));
 
                     //Finally, store the new agency in the travel agenct arraylist:
                     travel_agencies.Add(new_agency);

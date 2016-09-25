@@ -41,7 +41,7 @@ namespace Ecommerce
             this.current_number_of_available_rooms = MAX_ROOMS;                                     // Initialize the Hotel's 
             this.current_pricecuts_made = 0;                                                        // Instantiate the current number of price cuts made. 20 is the max.
             this.price_model = new PriceModel(this.price, this.current_number_of_available_rooms);  // Instantiate a new Price Model object for this Hotel.
-            this.price = this.price_model.generateNewPrice();                                       // TODO::Initialize first price value using the price model;
+            this.price = BankService.formatCurrency(((Hotel.MAX_PRICE + Hotel.MIN_PRICE) / 2));     // TODO::Initialize first price value using the price model;
 
             OrderProcessing.addOrderToProcessListener(orderProcessHandler);
 
@@ -136,8 +136,7 @@ namespace Ecommerce
 
             private decimal current_price;
             private int available_number_of_rooms;
-            private int modifier_count; 
-
+            private int mod_count;
 
             /// <summary>
             /// This is the args constructor of the PriceModel Class. 
@@ -147,7 +146,7 @@ namespace Ecommerce
             public PriceModel(decimal price, int available_rooms) {
                 this.current_price = BankService.formatCurrency(price);
                 this.available_number_of_rooms = available_rooms;
-                this.modifier_count = 1;
+                this.mod_count = 0;
             }
 
 
@@ -160,26 +159,29 @@ namespace Ecommerce
                 decimal price_increase = 0;//Initial value of the price increase modifier.
                 decimal price_discount = 1;//Initial value of the price decrease modifier.
                 
-                //If the availability of rooms is less than half (less supply), the drive for demand goes up and thus price will increase:
-                if (this.available_number_of_rooms < (Hotel.MAX_ROOMS / 2))
+                //If the availability of rooms is less than half (less supply), the drive for demand goes up, OR IF IT IS THE WEEKDAY:
+                if ((this.available_number_of_rooms < (Hotel.MAX_ROOMS / 3)) || ((mod_count%7) < 5) )
                 {
-                    price_increase = BankService.formatCurrency((decimal)(this.modifier_count * Math.E));
+                    //Increase by 20%:
+                    price_increase = BankService.formatCurrency((decimal)(this.current_price * 1.02M));
                 }
 
-                //If it is the "weekend" 0 == Sunday, 6 == Saturday give discount:
-                if (((this.modifier_count % 7) == 0) || ((this.modifier_count % 7) == 6))
+                //If it is the (6 == ) Sunday discount or  wild card discount, apply the discount:
+                Random wildcard = new Random();
+                int wildCardSpecials = wildcard.Next(0, 7);
+                if ((wildCardSpecials > 3) || (((mod_count%7) > 4)))
                 {
                     //Set the discount modifier to 1.2 or essentially taking 20% off if there is a price increase, if there is no high demand, take 45% off hotel room price for weekends.
-                    price_discount = (price_increase == 0) ? BankService.formatCurrency(1.45M) : BankService.formatCurrency(1.2M);
+                    price_discount = (price_increase == 0) ? BankService.formatCurrency(1.35M) : BankService.formatCurrency(1.20M);
                 }
-                
-                this.current_price = BankService.formatCurrency(((this.current_price + price_increase) / price_discount));  //The actual Price model function.
-                if (this.current_price < Hotel.MIN_PRICE) { this.current_price = BankService.formatCurrency(50); }          //Adjust price if model goes over minimum Hotel price.
-                else if (this.current_price > Hotel.MAX_PRICE) { this.current_price = BankService.formatCurrency(500); }    //Adjust price if model goes over maximum Hotel price.
-                this.modifier_count++;                                                                                           //Increment the modifier.
+                mod_count++;
 
-                Random test = new Random();
-                this.current_price = test.Next(MIN_PRICE,MAX_PRICE+1);
+
+                this.current_price = BankService.formatCurrency(((this.current_price + price_increase) / price_discount));  //The actual Price model function.
+
+                if (this.current_price < Hotel.MIN_PRICE) { this.current_price = BankService.formatCurrency(Hotel.MIN_PRICE); }          //Adjust price if model goes over minimum Hotel price.
+                else if (this.current_price > Hotel.MAX_PRICE) { this.current_price = BankService.formatCurrency(Hotel.MAX_PRICE); }    //Adjust price if model goes over maximum Hotel price
+                //this.current_price = test.Next(MIN_PRICE,MAX_PRICE+1);
                 return this.current_price;                                                                                  //Return the new price.
             }
 
